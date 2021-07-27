@@ -2,98 +2,81 @@ import React, { Component } from 'react'
 import Square from './components/Square'
 import './App.css'
 
-class App extends Component{
-  constructor(props){
+class App extends Component {
+  constructor(props) {
     super(props)
     this.state = {
-      squares: [" ", " "," "," "," "," "," "," "," "],
-      playerTurn: "X"
-      // player: "X",
-      // player2: "O",
-      // value: null
+      squares: ["", "", "", "", "", "", "", "", ""],
+      playerTurn: true,
+      count: 9
     }
   }
 
-// handleGamePlay = (index) => {
-// let {squares} = this.state
-// this.setState({squares: squares}) 
+  handleClick = (index) => {
+    let playerTurn = this.state.playerTurn
+    let squares = this.state.squares
+    this.setState({ count: this.state.count - 1 })
+    squares[index] = playerTurn;
+    let win = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ]
+    for (let i = 0; i < win.length; i++) {
+      let winCombo = win[i]
+      let p1 = winCombo[0]
+      let p2 = winCombo[1]
+      let p3 = winCombo[2]
+      if (squares[p1] != "" && squares[p1] == squares[p2] && squares[p2] == squares[p3] && squares[p3] == squares[p1]) {
+        alert(`Winner! player ${playerTurn}`)
+        return this.refreshPage()
+      } else if (this.state.count === 1) {
+        alert('You suck, out of tries!')
+        return this.refreshPage()
+      }
 
-// let {player1} = this.state
-// this.setState({player1: player1}) 
-// squares[index] = player1
+    }
 
-// let {player2} = this.state
-// this.setState({player2: player2}) 
-// squares[index] = player2
+    if (playerTurn === true && squares[index] !== '⭕️') {
+      squares[index] = '❌'
+      this.setState({
+        squares: squares,
+        playerTurn: false
+      })
+    } else if (playerTurn === false && squares[index] !== '❌') {
+      squares[index] = '⭕️'
+      this.setState({
+        squares: squares,
+        playerTurn: true
+      })
+    }
+  }
+  refreshPage = () => {
+    window.location.reload();
+  }
 
-
-// if (!squares[index]){
-//   squares[index] = player1
-//   player1 === "X" ? player2 = "O" : player1 = "X"
-//   this.setState({squares: "X", player: player})
-
-// }
-
-
-//this.state = { player:1 , winner: false}
-//return this.state.player === 1 ? 2 : 1;
-
-// }
-
-
-handleClick = (index) => {
-  // this.props.handleGamePlay(this.props.index)
-  let playerTurn = this.state.playerTurn
-  let squares = this.state.squares
-
-  squares[index] = playerTurn;
-let win =  [
-  [0,1,2],
-  [3,4,5],
-  [6,7,8],
-  [0,3,6],
-  [1,4,7],
-  [2,5,8],
-  [0,4,8],
-  [2,4,6]
-]
-for (let i =0; i < win.length; i++){
-  let winCombo = win[i]
-  let p1 = winCombo[0] 
-  let p2 = winCombo[1] 
-  let p3 = winCombo[2]
-  if(square[p1] == p2 && p2 == p3 && p3 == p1){
-    alert(`Winner! player ${playerTurn}`)
-  } 
-
-}
-
-  playerTurn = (playerTurn == "X") ? "O" : "X";
-  this.setState ({
-    playerTurn: playerTurn,
-    squares: squares
-
-  })
-}
-
-  render(){
-    return(
+  render() {
+    return (
       <>
         <h1>Tic Tac Toe</h1>
+        <p id="counter">Count: {this.state.count}</p>
+        <p>{this.state.playerTurn ? "player 1" : "player2"}</p>
+        <button>💣</button>
         <div id="gameboard">
-        {/* {this.state.squares.map((value, index) => {
-          return <Square value={value}
-           key={index} 
-           index={index}
-           handleGamePlay={this.handleGamePlay}
-           />
-        } )} */}
 
-        {this.state.squares.map((square, index) => {
-          return (<div onClick={() => this.handleClick(index)}  className="square">{square}</div>)})}
+          {this.state.squares.map((square, index) => {
+            return (<div onClick={() => this.handleClick(index)} className="square">{square}</div>)
+          })}
         </div>
+        <button onClick={this.refreshPage}>Click to restart</button>
+
       </>
-      )
-        }
-      }
+    )
+  }
+}
 export default App
